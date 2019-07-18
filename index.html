@@ -71,32 +71,28 @@
 </section>
 <section id="구조" class="level1">
 <h1>구조?</h1>
-</section>
-<section id="container-vs-virtual-machine" class="level1">
-<h1><img src="assets/cvsv.png" alt="Container vs Virtual Machine" /></h1>
+<figure>
+<img src="assets/cvsv.png" alt="Container vs Virtual Machine" /><figcaption>Container vs Virtual Machine</figcaption>
+</figure>
 <p>Container vs Virtual Machine</p>
 <p><small><a href="https://blog.docker.com/2018/08/containers-replacing-virtual-machines/">image from docker blog</a></small></p>
 </section>
 <section id="성능" class="level1">
 <h1>성능?</h1>
-</section>
-<section id="section" class="level1">
-<h1><img src="assets/performance.png" style="width:700px;"/></h1>
-<p>Container vs Virtual Machine - IOPS</p>
+<p><img src="assets/performance.png" style="width:700px;"/>
+Container vs Virtual Machine - IOPS</p>
 <p><small><a href="http://course.ece.cmu.edu/~ece845/docs/containers.pdf">image from An Updated Performance Comparison of Virtual Machines and Linux Containers</a></small></p>
 </section>
 <section id="성능이-떨어지는-이유는-구조-때문인가" class="level1">
 <h1>성능이 떨어지는 이유는 구조 때문인가?</h1>
-</section>
-<section id="section-1" class="level1">
-<h1><img src="assets/virtio.png" style="width:700px;"/></h1>
-<p>Container vs Virtual Machine - virtio</p>
+<p><img src="assets/virtio.png" style="width:600px;"/>
+Container vs Virtual Machine - virtio</p>
 <p><small><a href="http://course.ece.cmu.edu/~ece845/docs/containers.pdf">image from An Updated Performance Comparison of Virtual Machines and Linux Containers</a></small></p>
 </section>
 <section id="virtio-qemu의-존재-이유" class="level1">
 <h1>virtio, QEMU의 존재 이유?</h1>
 </section>
-<section id="section-2" class="level1">
+<section id="section" class="level1">
 <h1></h1>
 <p><img src="assets/emulation.png" style="width:700px;"/></p>
 <p>emulation - 본뜸</p>
@@ -114,6 +110,8 @@
 <section id="최초에는-isolation만이-고려" class="level1">
 <h1>최초에는 isolation만이 고려</h1>
 <p>emulation의 오버헤드 없이 사용하고자 했음</p>
+<p><img src="assets/chrooted_fig1.gif" style="width:600px;"/></p>
+<p><small><a href="https://linuxhill.wordpress.com/2014/08/09/014-setting-up-a-chroot-jail-in-crunchbang-11debian-wheezy/">image from Configuring a Chroot Jail on Debian Wheezy</a></small></p>
 </section>
 <section id="os-container로-시작" class="level1">
 <h1>os container로 시작</h1>
@@ -125,7 +123,7 @@
 <p><img src="assets/osvsapp.png" style="width:600px;"/></p>
 <p><small><a href="https://medium.com/faun/the-missing-introduction-to-containerization-de1fbb73efc5">image from The Missing Introduction To Containerization</a></small></p>
 </section>
-<section id="section-3" class="level1">
+<section id="section-1" class="level1">
 <h1></h1>
 <figure>
 <img src="assets/history.png" alt="History of Container" /><figcaption>History of Container</figcaption>
@@ -134,7 +132,7 @@
 <section id="app-container를-한마디로-한다면" class="level1">
 <h1>app container를 한마디로 한다면?</h1>
 </section>
-<section id="section-4" class="level1">
+<section id="section-2" class="level1">
 <h1></h1>
 <p><img src="assets/robot-machine-simulation.png" style="width:700px;"/></p>
 <p>simulation - 모의실험</p>
@@ -157,7 +155,7 @@
 </section>
 <section id="cgroup과-namespace" class="level1">
 <h1>cgroup과 namespace</h1>
-<p>cgroup: resource(memory, cpu, …)을 관리하기 위한 기술</p>
+<p>cgroup: control group, resource(memory, cpu, …)을 관리하기 위한 기술</p>
 <p>namespace: 논리적인 독립공간을 제공하기 위한 기술</p>
 </section>
 <section id="namespace-종류" class="level1">
@@ -179,7 +177,7 @@
 <h1>어떻게 namespace를 생성하는가?</h1>
 <p><em><a href="http://man7.org/linux/man-pages/man2/unshare.2.html">unshare</a> - disassociate parts of the process execution context</em></p>
 </section>
-<section id="section-5" class="level1">
+<section id="section-3" class="level1">
 <h1></h1>
 <pre><code>$ # 이미지 추출
 $ docker export blissful_goldstine -o dockercontainer.tar
@@ -196,14 +194,38 @@ root:# mount -t tmpfs none /tmp</code></pre>
 </section>
 <section id="다만-아직-남은게-있음" class="level1">
 <h1>다만 아직 남은게 있음</h1>
-<p>resource는 분할 했지만 아직 사용량제어를 하지 않음</p>
+<p>아직 사용량제어를 하지 않음</p>
 <p>그래서 여기에 cgroup을 적용해야 함</p>
 </section>
-<section id="그리고-마지막으로" class="level1">
-<h1>그리고 마지막으로</h1>
+<section id="이런-과정을-조금-쉽게-쓸-수-있게-한다면" class="level1">
+<h1>이런 과정을 조금 쉽게 쓸 수 있게 한다면</h1>
+<p><a href="https://github.com/opencontainers/runc">runc</a>를 사용</p>
+<p>OCI 스펙(runtime spec, image spec)에 따라<br />
+컨테이너 생성 및 실행을위한 CLI 도구</p>
+</section>
+<section id="runc" class="level1">
+<h1>runc</h1>
+<pre><code>$ docker run --name node4 mhart/alpine-node:4 node
+$ docker export node4 &gt; rootfs.tar
+$ mkdir -p ./rootfs
+$ tar -xf rootfs.tar -C ./rootfs
+$ runc spec
+$ sudo runc start node4_repl
+/ # node
+&gt; process.version
+&#39;v4.4.1&#39;
+&gt; </code></pre>
+<p><small><a href="https://blog.alexellis.io/runc-in-30-seconds/">from runc in 30 seconds</a></small></p>
+</section>
+<section id="binary가-아닌-code에서-직접-이용" class="level1">
+<h1>binary가 아닌 code에서 직접 이용</h1>
+<p><a href="https://github.com/opencontainers/runc/tree/master/libcontainer">libcontainer</a>를 이용</p>
+<p>native Go 로 namespace, cgroups, capabilities, filesystem access controls를 사용하여 컨테이너를 만들기 위한 라이브러리</p>
+</section>
+<section id="마지막으로-일반적인-container라면" class="level1">
+<h1>마지막으로 일반적인 container라면</h1>
 <p>network을 외부 연결해줘야 함</p>
-<p>현재의 network는 갇힌 외부로 연결이 불가능한<br />
-network namespace 상태</p>
+<p>현재의 network는 갇힌 외부로 연결이 불가능한 상태</p>
 <p>그래서 namespace를 가로지르는 통신방법이 필요</p>
 </section>
 <section id="veth-virtual-ethernet" class="level1">
@@ -213,8 +235,23 @@ network namespace 상태</p>
 <p><img src="assets/container_namespaces.png" /></p>
 <p><small><a href="https://platform9.com/blog/container-namespaces-deep-dive-container-networking/">image from Container Namespaces – Deep Dive into Container Networking</a></small></p>
 </section>
-<section id="최적화된-방법이란" class="level1">
-<h1>최적화된 방법이란?</h1>
+<section id="veth-command" class="level1">
+<h1>veth: command</h1>
+<pre><code>$ sudo brctl addbr runc0
+$ sudo ip link set runc0 up
+$ sudo ip addr add 192.168.10.1/24 dev runc0
+$ sudo ip link add name veth-host type veth peer name veth-guest
+$ sudo ip link set veth-host up
+$ sudo brctl addif runc0 veth-host
+$ sudo ip netns add runc
+$ sudo ip link set veth-guest netns runc
+$ sudo ip netns exec runc ip link set veth-guest name eth1
+$ sudo ip netns exec runc ip addr add 192.168.10.101/24 dev eth1
+$ sudo ip netns exec runc ip link set eth1 up
+$ sudo ip netns exec runc ip route add default via 192.168.10.1</code></pre>
+</section>
+<section id="또-하나의-중요한-키워드인-최적화된-방법이란" class="level1">
+<h1>또 하나의 중요한 키워드인 최적화된 방법이란?</h1>
 </section>
 <section id="예---ip-할당" class="level1">
 <h1>예 - IP 할당</h1>
@@ -255,17 +292,25 @@ network namespace 상태</p>
 restart 대신에 delete 하면 kubernetes에서 새로 생성하게 되고 우리는 굳이 restart 에 대해 디자인 하기 보다 delete 할때 처리해야 하는 일과 start 할때 처리해야 하는 일에 집중해서 stateless 하게 만듭니다.
 </aside>
 </section>
+<section id="결국-최적화된-방법들의-등장으로" class="level1">
+<h1>결국 최적화된 방법들의 등장으로</h1>
+<p>기존의 프로세스에 익숙하던 유저들도 새롭게 배워야하는 비용이 있음</p>
+</section>
+<section id="정리" class="level1">
+<h1>정리</h1>
+</section>
 <section id="virtual-machine-vs-container-목표" class="level1">
 <h1>Virtual machine vs container 목표</h1>
 <ul>
 <li>VM: <font color="red"><strong>physical machine</strong></font>의 기능을 최대한 닮게 소프트웨어로 구현</li>
 <li>app container: <font color="red"><strong>process</strong></font>가 해야하는 목표를 재현율을 높이며 최적화된 방법을 소프트웨어로 구현</li>
 </ul>
-<p><em>결국 physical machine 과 process의 차이 관점으로 봐야함</em></p>
+<p><em>결국 physical machine 과 process의 차이</em></p>
+<p><em>결국 emulation 과 simulation의 차이</em></p>
 </section>
 <section id="결국" class="level1">
 <h1>결국</h1>
-<p>이전보다 더 좁은 scope로<br />
+<p>이전보다 더 좁은 scope(PM -&gt; process)로<br />
 보다 목표 중심적으로 사고를 할 수 있게 됨</p>
 <p>container를 사용하면서 기존의 방식을<br />
 재정의하여 최적화 한 방법들이 나타남</p>
@@ -313,6 +358,10 @@ restart 대신에 delete 하면 kubernetes에서 새로 생성하게 되고 우�
 <p><img src="assets/docker-ce.png" style="width:600px;"/></p>
 <p><small><a href="https://kubernetes.io/blog/2018/05/24/kubernetes-containerd-integration-goes-ga/">from kubernetes-containerd-integration-goes-ga</a></small></p>
 </section>
+<section id="예-containerd를-사용하면" class="level1">
+<h1>예: containerd를 사용하면</h1>
+<p>daemon을 restart 해도 기존 container들에 영향이 없음</p>
+</section>
 <section id="containerd" class="level1">
 <h1>containerd</h1>
 <p>단순성, 견고성, 휴대성을 중시한<br />
@@ -331,6 +380,11 @@ restart 대신에 delete 하면 kubernetes에서 새로 생성하게 되고 우�
 <section id="그렇다면-build는" class="level1">
 <h1>그렇다면 build는?</h1>
 </section>
+<section id="build-tools" class="level1">
+<h1>build tools</h1>
+<p><img src="assets/buildtools.png" style="width:700px;"/></p>
+<p><small><a href="https://events.linuxfoundation.org/wp-content/uploads/2017/11/Comparing-Next-Generation-Container-Image-Building-Tools-OSS-Akihiro-Suda.pdf">Comparing-Next-Generation-Container-Image-Building-Tools</a></small></p>
+</section>
 <section id="buildkit" class="level1">
 <h1>buildkit</h1>
 <p>동시성, 캐시 효율성 이 있으며<br />
@@ -343,68 +397,13 @@ Dockerfile에 구속받지않는 빌더 툴킷</p>
 <p>새로운 runtime을 사용하면<br />
 buildtime, runtime을 구분 함</p>
 <p>이를 통해 container service에서는<br />
-오직 runtime만 사용하여 보안성 및 성능 향상</p>
+오직 runtime만 사용하여 보안성, 안정성 및 성능 향상</p>
 </section>
 <section id="한계-2" class="level1">
 <h1>한계 #2</h1>
 <p>docker는 <code>root</code>만이 해당 OS에 설치가능</p>
 <p>취약점 발생시 OS레벨<br />
 문제 일으킬 가능성들이 존재함</p>
-</section>
-<section id="root로-사용하는-컨테이너들" class="level1">
-<h1>root로 사용하는 컨테이너들</h1>
-<p><code>USER</code> syntax등을 사용하지 않으면 기본적으로 root 이기에</p>
-<p>일반적으로 root user를 사용해서 docker를 이용</p>
-<pre><code>$ docker run -ti busybox whoami
-root</code></pre>
-</section>
-<section id="외부-device-혹은-directory-mount시-일반-user사용이-힘든" class="level1">
-<h1>외부 device 혹은 directory mount시 일반 user사용이 힘든</h1>
-<p>권한 문제발생</p>
-<pre><code>$ cat Dockerfile 
-...
-
-# Add chrome user
-RUN groupmod -g 995 audio \
-    &amp;&amp; groupmod -g 986 video \
-    &amp;&amp; groupadd -g 1000 -r chrome \
-    &amp;&amp; useradd -u 1000 -r -g chrome -G audio,video chrome \
-    &amp;&amp; mkdir -p /home/chrome/Downloads \
-    &amp;&amp; chown -R chrome:chrome /home/chrome
-
-...
-
-# Run Chrome as non privileged user
-USER chrome
-
-# Autorun chrome
-ENTRYPOINT [ &quot;google-chrome&quot; ]
-CMD [ &quot;--user-data-dir=/data&quot; ]</code></pre>
-<p><small><a href="https://github.com/leoh0/dotfiles/blob/master/.dockerfunc#L1280-L1308">from leoh0 dockerfiles</a></small></p>
-</section>
-<section id="root로-사용하는-컨테이너들-1" class="level1">
-<h1>root로 사용하는 컨테이너들</h1>
-<p>일반적으로 root를 사용해서 docker를 이용</p>
-<pre><code>vscode(){
-    docker run -d \
-        -v /etc/localtime:/etc/localtime:ro \
-        -v /tmp/.X11-unix:/tmp/.X11-unix  \
-        -v /usr/share/fonts:/usr/share/fonts \
-        -v /usr/lib/locale/locale-archive:/usr/lib/locale/locale-archive \
-        -v &quot;${HOME}/.vscode/extension:/home/user/.vscode&quot; \
-        -v &quot;${HOME}/.vscode/config:/home/user/.config&quot; \
-        -e &quot;GTK_IM_MODULE=uim&quot; \
-        -e &quot;XMODIFIERS=@im=uim&quot; \
-        -e &quot;QT_IM_MODULE=uim&quot; \
-        -e &quot;LC_ALL=ko_KR.UTF-8&quot; \
-        -v &quot;$(pwd):/project&quot; \
-        -e &quot;DISPLAY=unix${DISPLAY}&quot; \
-        --device /dev/dri \
-        --name visualstudio \
-        leoh0/vscode \
-        bash -c &#39;su user -p -c &quot;/usr/share/code/code /project&quot;&#39;
-}</code></pre>
-<p>#TODO 일반유저를 줘서 사용시 uid, gid 치환문제가 발생</p>
 </section>
 <section id="rootless-container" class="level1">
 <h1>rootless container</h1>
@@ -423,6 +422,18 @@ CMD [ &quot;--user-data-dir=/data&quot; ]</code></pre>
 </ul>
 <p><small><a href="https://rootlesscontaine.rs/">from rootlesscontaine.rs</a></small></p>
 </section>
+<section id="vs-rootless" class="level1">
+<h1>vs rootless</h1>
+<p><img src="assets/rootless.png" style="width:800px;"/></p>
+<p><small><a href="https://medium.com/@tonistiigi/experimenting-with-rootless-docker-416c9ad8c0d6">image from experimenting-with-rootless-docker</a></small></p>
+</section>
+<section id="이미-libcontainer에-들어가있음" class="level1">
+<h1>이미 libcontainer에 들어가있음</h1>
+<p>runc등 다양한 곳에서 사용가능</p>
+</section>
+<section id="하지만-좀-더-대중적인-툴은" class="level1">
+<h1>하지만 좀 더 대중적인 툴은</h1>
+</section>
 <section id="podman" class="level1">
 <h1>podman</h1>
 <p>Podman linux 시스템에서 OCI 컨테이너를<br />
@@ -435,11 +446,12 @@ CMD [ &quot;--user-data-dir=/data&quot; ]</code></pre>
 <h1>데몬 없는 podman</h1>
 <p>podman 커맨드가 직접 linux에 접근해서 모든것을 실행</p>
 <p><img src="assets/fig2.png" style="width:400px;"/></p>
-<p><a href="https://developers.redhat.com/blog/2019/02/21/podman-and-buildah-for-docker-users/">from podman-and-buildah-for-docker-users</a></p>
+<p><small><a href="https://developers.redhat.com/blog/2019/02/21/podman-and-buildah-for-docker-users/">from podman-and-buildah-for-docker-users</a></small></p>
 </section>
 <section id="binctr" class="level1">
 <h1>binctr</h1>
-<p>실행 가능한 바이너리로서 완전 정적이고 권한없이도 실행가능한 독립적 인 컨테이너.</p>
+<p>실행 가능한 바이너리로서 완전 정적이고<br />
+root 권한없이도 실행가능한 독립적 인 컨테이너.</p>
 <p><a href="https://github.com/genuinetools/binctr">from binctr</a></p>
 </section>
 <section id="binctr-예" class="level1">
@@ -448,50 +460,14 @@ CMD [ &quot;--user-data-dir=/data&quot; ]</code></pre>
 <video autoplay="true" class="stretch" src="assets/binctr.mp4">
 </video>
 </section>
-<p><a href="https://github.com/leoh0/kakaotalk-binctr/">from kakaotalk-binctr</a></p>
 </section>
 <section id="과정" class="level1">
 <h1>과정</h1>
-<p>#TODO 이쁘게 수정</p>
-<p><small></p>
-<p>바이너리 실행 -&gt;</p>
-<p>컨테이너 스펙 생성 -&gt;</p>
-<p>바이너리 안에 미리 넣은 이미지를 압축 풀어서 rootfs를 만듬 -&gt;</p>
-<p>컨테이너 실행 -&gt;</p>
-<p>컨테이너 안에서 이 바이너리를 실행 이때 뒤에 인자 init을 붙여서 분기 -&gt;</p>
-<p>컨테이너 안에서 다시 이 바이너리가 실행되면서<br />
-위의 rootfs로 pivot하여 위의 컨테이너 스펙으로 실행
-</small></p>
+<p><img src="assets/binctr.png" style="width:400px;"/></p>
 </section>
-<section id="이를-구현한-주요-코드" class="level1">
-<h1>이를 구현한 주요 코드</h1>
-<pre><code>package main
-
-import (
-    &quot;flag&quot;
-    &quot;os&quot;
-    &quot;runtime&quot;
-
-    &quot;github.com/leoh0/binctr/container&quot;
-    &quot;github.com/opencontainers/runc/libcontainer&quot;
-    _ &quot;github.com/opencontainers/runc/libcontainer/nsenter&quot;
-    specs &quot;github.com/opencontainers/runtime-spec/specs-go&quot;
-    &quot;github.com/sirupsen/logrus&quot;
-)
-
-const (
-    defaultRoot      = &quot;/tmp/kakaotalk-binctr&quot;
-    defaultRootfsDir = &quot;rootfs&quot;
-)
-
-var (
-    containerID string
-    root        string
-
-    file      string
-    dir       string
-    shortpath string
-)
+<section id="주요-코드" class="level1">
+<h1>주요 코드</h1>
+<pre><code>...
 
 func init() {
     // Parse flags
@@ -604,13 +580,14 @@ func runInit() {
     }
     panic(&quot;libcontainer: container init failed to exec&quot;)
 }</code></pre>
+<p><a href="https://github.com/leoh0/kakaotalk-binctr/">from kakaotalk-binctr</a></p>
 </section>
 <section id="이런-방법외에도" class="level1">
 <h1>이런 방법외에도</h1>
 <p>coreOS</p>
 <p>linuxkit</p>
 <p>등과 같은 공격받을 범위를 줄이는<br />
-적은 공격 범위를 갖는 전문 컨테이너 호스트를 사용</p>
+적은 공격 범위를 갖는 컨테이너 호스트를 사용</p>
 </section>
 <section id="결론-1" class="level1">
 <h1>결론</h1>
@@ -624,33 +601,41 @@ func runInit() {
 </section>
 <section id="multi-tenant" class="level1">
 <h1>multi tenant</h1>
-<p>#TODO multi tenant가 왜 필요 한지?</p>
+<p>자원의 집적율을 더욱 높일 수 있음</p>
+<p>신뢰 할 수 없는 자원들도 같은 호스트에서 구동 가능</p>
+</section>
+<section id="스프롤-현상" class="level1">
+<h1>스프롤 현상</h1>
+<p>도시계획과 관리 등이 불량하여 발생하는 현상으로,<br />
+도시 시설이나 설비가 부족한 채로<br />
+도시가 저밀도로 무질서하게 교외로 확산되는 것을 말함</p>
+<p><small><a href="https://ko.wikipedia.org/wiki/%EC%8A%A4%ED%94%84%EB%A1%A4_%ED%98%84%EC%83%81">from wikipedia</a></small></p>
 </section>
 <section id="kubesprawl" class="level1">
 <h1>kubesprawl</h1>
-<p>#TODO kubesprawl 에 대한 설명</p>
-<p>https://tech.paulcz.net/blog/future-of-kubernetes-is-virtual-machines/</p>
+<p>작은 kubernetes cluster를 개발자 마다 나눠주게 되면</p>
+<p>사용되지 않는 자원들이 많이 발생해서 낭비가 심함</p>
+<p><small><a href="https://tech.paulcz.net/blog/future-of-kubernetes-is-virtual-machines/">from future-of-kubernetes-is-virtual-machines</a></small></p>
 </section>
 <section id="isolation-정도" class="level1">
 <h1>isolation 정도</h1>
 <p><img src="assets/image1.png" style="width:700px;"/></p>
-<p><a href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies</a></p>
+<p><small><a href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies</a></small></p>
 </section>
 <section id="kubernetes-soft-multi-tenancy" class="level1">
 <h1>kubernetes soft multi tenancy</h1>
-<p>#TODO namespace 소개
-namespace</p>
+<p>namespace</p>
 </section>
 <section id="kubernetes-hard-multi-tenancy" class="level1">
 <h1>kubernetes hard multi tenancy</h1>
 <p><img src="assets/mtimage2.png" style="width:700px;"/></p>
-<p><a href="https://blog.jessfraz.com/post/hard-multi-tenancy-in-kubernetes/">hard-multi-tenancy-in-kubernetes</a></p>
+<p><small><a href="https://blog.jessfraz.com/post/hard-multi-tenancy-in-kubernetes/">hard-multi-tenancy-in-kubernetes</a></small></p>
 </section>
 <section id="sandboxed-containers" class="level1">
 <h1>sandboxed containers</h1>
 <p>a.k.a micro vm</p>
 <p><img src="assets/sandbox.png" style="width:700px;"/></p>
-<p><a href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies</a></p>
+<p><small><a href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies</a></small></p>
 </section>
 <section id="결론-2" class="level1">
 <h1>결론</h1>

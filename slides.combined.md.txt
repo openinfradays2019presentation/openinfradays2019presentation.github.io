@@ -47,7 +47,7 @@ Container와 Virtual machine은 비교대상인가?
 
 # 구조?
 
-# ![Container vs Virtual Machine](assets/cvsv.png)
+![Container vs Virtual Machine](assets/cvsv.png)
 
 Container vs Virtual Machine
 
@@ -55,14 +55,14 @@ Container vs Virtual Machine
 
 # 성능?
 
-# <img src="assets/performance.png" style="width:700px;"/>
+<img src="assets/performance.png" style="width:700px;"/>
 Container vs Virtual Machine - IOPS
 
 <small>[image from An Updated Performance Comparison of Virtual Machines and Linux Containers](http://course.ece.cmu.edu/~ece845/docs/containers.pdf)</small>
 
 # 성능이 떨어지는 이유는 구조 때문인가?
 
-# <img src="assets/virtio.png" style="width:700px;"/>
+<img src="assets/virtio.png" style="width:600px;"/>
 Container vs Virtual Machine - virtio
 
 <small>[image from An Updated Performance Comparison of Virtual Machines and Linux Containers](http://course.ece.cmu.edu/~ece845/docs/containers.pdf)</small>
@@ -89,6 +89,11 @@ emulation - 본뜸
 # 최초에는 isolation만이 고려
 
 emulation의 오버헤드 없이 사용하고자 했음
+
+<img src="assets/chrooted_fig1.gif" style="width:600px;"/>
+
+<small>[image from Configuring a Chroot Jail on Debian Wheezy](https://linuxhill.wordpress.com/2014/08/09/014-setting-up-a-chroot-jail-in-crunchbang-11debian-wheezy/)</small>
+
 
 # os container로 시작
 
@@ -135,7 +140,7 @@ physical machine이 아닌 <font color="red">**process**</font>
 
 # cgroup과 namespace
 
-cgroup: resource(memory, cpu, ...)을 관리하기 위한 기술
+cgroup: control group, resource(memory, cpu, ...)을 관리하기 위한 기술
 
 namespace: 논리적인 독립공간을 제공하기 위한 기술
 
@@ -186,16 +191,45 @@ root:# mount -t tmpfs none /tmp
 
 # 다만 아직 남은게 있음
 
-resource는 분할 했지만 아직 사용량제어를 하지 않음
+아직 사용량제어를 하지 않음
 
 그래서 여기에 cgroup을 적용해야 함
 
-# 그리고 마지막으로
+# 이런 과정을 조금 쉽게 쓸 수 있게 한다면
+
+[runc](https://github.com/opencontainers/runc)를 사용
+
+OCI 스펙(runtime spec, image spec)에 따라    
+컨테이너 생성 및 실행을위한 CLI 도구
+
+# runc
+
+```
+$ docker run --name node4 mhart/alpine-node:4 node
+$ docker export node4 > rootfs.tar
+$ mkdir -p ./rootfs
+$ tar -xf rootfs.tar -C ./rootfs
+$ runc spec
+$ sudo runc start node4_repl
+/ # node
+> process.version
+'v4.4.1'
+> 
+```
+
+<small>[from runc in 30 seconds](https://blog.alexellis.io/runc-in-30-seconds/)</small>
+
+# binary가 아닌 code에서 직접 이용
+
+[libcontainer](https://github.com/opencontainers/runc/tree/master/libcontainer)를 이용
+
+native Go 로 namespace, cgroups, capabilities, filesystem access controls를 사용하여 컨테이너를 만들기 위한 라이브러리
+
+# 마지막으로 일반적인 container라면
 
 network을 외부 연결해줘야 함
 
-현재의 network는 갇힌 외부로 연결이 불가능한    
-network namespace 상태
+현재의 network는 갇힌 외부로 연결이 불가능한 상태
 
 그래서 namespace를 가로지르는 통신방법이 필요
 
@@ -209,7 +243,24 @@ pair로 존재하며 다른 namespace에 동일하게 존재하여
 
 <small>[image from Container Namespaces – Deep Dive into Container Networking](https://platform9.com/blog/container-namespaces-deep-dive-container-networking/)</small>
 
-# 최적화된 방법이란?
+# veth: command
+
+```
+$ sudo brctl addbr runc0
+$ sudo ip link set runc0 up
+$ sudo ip addr add 192.168.10.1/24 dev runc0
+$ sudo ip link add name veth-host type veth peer name veth-guest
+$ sudo ip link set veth-host up
+$ sudo brctl addif runc0 veth-host
+$ sudo ip netns add runc
+$ sudo ip link set veth-guest netns runc
+$ sudo ip netns exec runc ip link set veth-guest name eth1
+$ sudo ip netns exec runc ip addr add 192.168.10.101/24 dev eth1
+$ sudo ip netns exec runc ip link set eth1 up
+$ sudo ip netns exec runc ip route add default via 192.168.10.1
+```
+
+# 또 하나의 중요한 키워드인 최적화된 방법이란?
 
 # 예 - IP 할당
 
@@ -232,16 +283,24 @@ workload를 restart하는 것은 그것에 의미를 부여하여 stateful 함�
 restart 대신에 delete 하면 kubernetes에서 새로 생성하게 되고 우리는 굳이 restart 에 대해 디자인 하기 보다 delete 할때 처리해야 하는 일과 start 할때 처리해야 하는 일에 집중해서 stateless 하게 만듭니다.
 </aside>
 
+# 결국 최적화된 방법들의 등장으로
+
+기존의 프로세스에 익숙하던 유저들도 새롭게 배워야하는 비용이 있음
+
+# 정리
+
 # Virtual machine vs container 목표
 
 * VM: <font color="red">**physical machine**</font>의 기능을 최대한 닮게 소프트웨어로 구현
 * app container: <font color="red">**process**</font>가 해야하는 목표를 재현율을 높이며 최적화된 방법을 소프트웨어로 구현
 
-*결국 physical machine 과 process의 차이 관점으로 봐야함*
+*결국 physical machine 과 process의 차이*
+
+*결국 emulation 과 simulation의 차이*
 
 # 결국 
 
-이전보다 더 좁은 scope로    
+이전보다 더 좁은 scope(PM -> process)로    
 보다 목표 중심적으로 사고를 할 수 있게 됨
 
 container를 사용하면서 기존의 방식을    
@@ -294,6 +353,10 @@ docker 없이 container를 사용하기 위한 interface들이 제공됨
 
 <small>[from kubernetes-containerd-integration-goes-ga](https://kubernetes.io/blog/2018/05/24/kubernetes-containerd-integration-goes-ga/)</small>
 
+# 예: containerd를 사용하면
+
+daemon을 restart 해도 기존 container들에 영향이 없음
+
 # containerd
 
 단순성, 견고성, 휴대성을 중시한    
@@ -313,6 +376,12 @@ build는 별도
 
 # 그렇다면 build는?
 
+# build tools
+
+<img src="assets/buildtools.png" style="width:700px;"/>
+
+<small>[Comparing-Next-Generation-Container-Image-Building-Tools](https://events.linuxfoundation.org/wp-content/uploads/2017/11/Comparing-Next-Generation-Container-Image-Building-Tools-OSS-Akihiro-Suda.pdf)</small>
+
 # buildkit
 
 동시성, 캐시 효율성 이 있으며    
@@ -328,7 +397,7 @@ Dockerfile에 구속받지않는 빌더 툴킷
 buildtime, runtime을 구분 함    
 
 이를 통해 container service에서는    
-오직 runtime만 사용하여 보안성 및 성능 향상
+오직 runtime만 사용하여 보안성, 안정성 및 성능 향상
 
 # 한계 #2
 
@@ -336,72 +405,6 @@ docker는 `root`만이 해당 OS에 설치가능
 
 취약점 발생시 OS레벨    
 문제 일으킬 가능성들이 존재함
-
-# root로 사용하는 컨테이너들
-
-`USER` syntax등을 사용하지 않으면 기본적으로 root 이기에
-
-일반적으로 root user를 사용해서 docker를 이용
-
-```
-$ docker run -ti busybox whoami
-root
-```
-
-# 외부 device 혹은 directory mount시 일반 user사용이 힘든
-
-권한 문제발생
-
-```
-$ cat Dockerfile 
-...
-
-# Add chrome user
-RUN groupmod -g 995 audio \
-    && groupmod -g 986 video \
-    && groupadd -g 1000 -r chrome \
-    && useradd -u 1000 -r -g chrome -G audio,video chrome \
-    && mkdir -p /home/chrome/Downloads \
-	&& chown -R chrome:chrome /home/chrome
-
-...
-
-# Run Chrome as non privileged user
-USER chrome
-
-# Autorun chrome
-ENTRYPOINT [ "google-chrome" ]
-CMD [ "--user-data-dir=/data" ]
-```
-
-<small>[from leoh0 dockerfiles](https://github.com/leoh0/dotfiles/blob/master/.dockerfunc#L1280-L1308)</small>
-
-# root로 사용하는 컨테이너들
-
-일반적으로 root를 사용해서 docker를 이용
-
-```
-vscode(){
-	docker run -d \
-		-v /etc/localtime:/etc/localtime:ro \
-		-v /tmp/.X11-unix:/tmp/.X11-unix  \
-		-v /usr/share/fonts:/usr/share/fonts \
-		-v /usr/lib/locale/locale-archive:/usr/lib/locale/locale-archive \
-		-v "${HOME}/.vscode/extension:/home/user/.vscode" \
-		-v "${HOME}/.vscode/config:/home/user/.config" \
-		-e "GTK_IM_MODULE=uim" \
-		-e "XMODIFIERS=@im=uim" \
-		-e "QT_IM_MODULE=uim" \
-		-e "LC_ALL=ko_KR.UTF-8" \
-		-v "$(pwd):/project" \
-		-e "DISPLAY=unix${DISPLAY}" \
-		--device /dev/dri \
-		--name visualstudio \
-		leoh0/vscode \
-		bash -c 'su user -p -c "/usr/share/code/code /project"'
-}
-```
-#TODO 일반유저를 줘서 사용시 uid, gid 치환문제가 발생
 
 # rootless container
 
@@ -420,6 +423,18 @@ root 권한이없는 사용자가
 
 <small>[from rootlesscontaine.rs](https://rootlesscontaine.rs/)</small>
 
+# vs rootless
+
+<img src="assets/rootless.png" style="width:800px;"/>
+
+<small>[image from experimenting-with-rootless-docker](https://medium.com/@tonistiigi/experimenting-with-rootless-docker-416c9ad8c0d6)</small>
+
+# 이미 libcontainer에 들어가있음
+
+runc등 다양한 곳에서 사용가능
+
+# 하지만 좀 더 대중적인 툴은
+
 # podman
 
 Podman linux 시스템에서 OCI 컨테이너를    
@@ -437,11 +452,12 @@ podman 커맨드가 직접 linux에 접근해서 모든것을 실행
 
 <img src="assets/fig2.png" style="width:400px;"/>
 
-[from podman-and-buildah-for-docker-users](https://developers.redhat.com/blog/2019/02/21/podman-and-buildah-for-docker-users/)
+<small>[from podman-and-buildah-for-docker-users](https://developers.redhat.com/blog/2019/02/21/podman-and-buildah-for-docker-users/)</small>
 
 # binctr
 
-실행 가능한 바이너리로서 완전 정적이고 권한없이도 실행가능한 독립적 인 컨테이너.
+실행 가능한 바이너리로서 완전 정적이고    
+root 권한없이도 실행가능한 독립적 인 컨테이너.
 
 [from binctr](https://github.com/genuinetools/binctr)
 
@@ -451,58 +467,14 @@ podman 커맨드가 직접 linux에 접근해서 모든것을 실행
     <video autoplay=true class="stretch" src="assets/binctr.mp4"></video>
 </section>
 
-[from kakaotalk-binctr](https://github.com/leoh0/kakaotalk-binctr/)
-
 # 과정
 
-#TODO 이쁘게 수정
+<img src="assets/binctr.png" style="width:400px;"/>
 
-<small>
-
-바이너리 실행 ->
-
-컨테이너 스펙 생성 ->
-
-바이너리 안에 미리 넣은 이미지를 압축 풀어서 rootfs를 만듬 ->
-
-컨테이너 실행 ->
-
-컨테이너 안에서 이 바이너리를 실행 이때 뒤에 인자 init을 붙여서 분기 ->
-
-컨테이너 안에서 다시 이 바이너리가 실행되면서    
-위의 rootfs로 pivot하여 위의 컨테이너 스펙으로 실행
-</small>
-
-# 이를 구현한 주요 코드
+# 주요 코드
 
 ```
-package main
-
-import (
-	"flag"
-	"os"
-	"runtime"
-
-	"github.com/leoh0/binctr/container"
-	"github.com/opencontainers/runc/libcontainer"
-	_ "github.com/opencontainers/runc/libcontainer/nsenter"
-	specs "github.com/opencontainers/runtime-spec/specs-go"
-	"github.com/sirupsen/logrus"
-)
-
-const (
-	defaultRoot      = "/tmp/kakaotalk-binctr"
-	defaultRootfsDir = "rootfs"
-)
-
-var (
-	containerID string
-	root        string
-
-	file      string
-	dir       string
-	shortpath string
-)
+...
 
 func init() {
 	// Parse flags
@@ -617,6 +589,8 @@ func runInit() {
 }
 ```
 
+[from kakaotalk-binctr](https://github.com/leoh0/kakaotalk-binctr/)
+
 # 이런 방법외에도
 
 coreOS
@@ -624,7 +598,7 @@ coreOS
 linuxkit
 
 등과 같은 공격받을 범위를 줄이는    
-적은 공격 범위를 갖는 전문 컨테이너 호스트를 사용
+적은 공격 범위를 갖는 컨테이너 호스트를 사용
 
 # 결론
 
@@ -639,30 +613,41 @@ container는 VM과 달리 multi tenant를
 
 # multi tenant
 
-#TODO multi tenant가 왜 필요 한지?
+자원의 집적율을 더욱 높일 수 있음
+
+신뢰 할 수 없는 자원들도 같은 호스트에서 구동 가능
+
+# 스프롤 현상
+
+도시계획과 관리 등이 불량하여 발생하는 현상으로,    
+도시 시설이나 설비가 부족한 채로     
+도시가 저밀도로 무질서하게 교외로 확산되는 것을 말함
+
+<small>[from wikipedia](https://ko.wikipedia.org/wiki/%EC%8A%A4%ED%94%84%EB%A1%A4_%ED%98%84%EC%83%81)</small>
 
 # kubesprawl
 
-#TODO kubesprawl 에 대한 설명
+작은 kubernetes cluster를 개발자 마다 나눠주게 되면
 
-https://tech.paulcz.net/blog/future-of-kubernetes-is-virtual-machines/
+사용되지 않는 자원들이 많이 발생해서 낭비가 심함
+
+<small>[from future-of-kubernetes-is-virtual-machines](https://tech.paulcz.net/blog/future-of-kubernetes-is-virtual-machines/)</small>
 
 # isolation 정도
 
 <img src="assets/image1.png" style="width:700px;"/>
 
-[from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies](https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/)
+<small>[from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies](https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/)</small>
 
 # kubernetes soft multi tenancy
 
-#TODO namespace 소개
 namespace
 
 # kubernetes hard multi tenancy
 
 <img src="assets/mtimage2.png" style="width:700px;"/>
 
-[hard-multi-tenancy-in-kubernetes](https://blog.jessfraz.com/post/hard-multi-tenancy-in-kubernetes/)
+<small>[hard-multi-tenancy-in-kubernetes](https://blog.jessfraz.com/post/hard-multi-tenancy-in-kubernetes/)</small>
 
 
 # sandboxed containers
@@ -671,7 +656,7 @@ a.k.a micro vm
 
 <img src="assets/sandbox.png" style="width:700px;"/>
 
-[from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies](https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/)
+<small>[from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies](https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/)</small>
 
 # 결론
 
