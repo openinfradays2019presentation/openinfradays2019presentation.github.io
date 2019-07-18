@@ -63,6 +63,7 @@ Container vs Virtual Machine - IOPS
 # 성능이 떨어지는 이유는 구조 때문인가?
 
 <img src="assets/virtio.png" style="width:600px;"/>
+
 Container vs Virtual Machine - virtio
 
 <small>[image from An Updated Performance Comparison of Virtual Machines and Linux Containers](http://course.ece.cmu.edu/~ece845/docs/containers.pdf)</small>
