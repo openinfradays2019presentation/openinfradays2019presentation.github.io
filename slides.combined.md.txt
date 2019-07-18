@@ -658,6 +658,12 @@ a.k.a micro vm
 
 <small>[from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies](https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/)</small>
 
+# 호환성과 최적화
+
+emulation과 simulation에서 대표되는 두 단어는 항상 양립
+
+결국 둘을 어떻게 섞는지 찾는게 숙제
+
 # 결론
 
 기존의 VM의 강점을 가저가면서도    
