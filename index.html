@@ -305,6 +305,9 @@ restart 대신에 delete 하면 kubernetes에서 새로 생성하게 되고 우�
 <li>VM: <font color="red"><strong>physical machine</strong></font>의 기능을 최대한 닮게 소프트웨어로 구현</li>
 <li>app container: <font color="red"><strong>process</strong></font>가 해야하는 목표를 재현율을 높이며 최적화된 방법을 소프트웨어로 구현</li>
 </ul>
+</section>
+<section id="section-4" class="level1">
+<h1></h1>
 <p><em>결국 physical machine 과 process의 차이</em></p>
 <p><em>결국 emulation 과 simulation의 차이</em></p>
 </section>
@@ -321,8 +324,8 @@ restart 대신에 delete 하면 kubernetes에서 새로 생성하게 되고 우�
 </section>
 <section id="docker와-container와의-관계" class="level1">
 <h1>docker와 container와의 관계</h1>
-<p>old: docker <strong>is</strong> container</p>
-<p>new: docker <strong>is</strong> container <code>platform</code></p>
+<p>OLD: docker <strong>is</strong> container</p>
+<p>NEW: docker <strong>is</strong> container <code>platform</code></p>
 </section>
 <section id="docker의-문제" class="level1">
 <h1>docker의 문제</h1>
@@ -599,16 +602,21 @@ func runInit() {
 <p>container는 VM과 달리 multi tenant를<br />
 위한 isolation이 적합하지 못하다.</p>
 </section>
-<section id="multi-tenant" class="level1">
-<h1>multi tenant</h1>
-<p>자원의 집적율을 더욱 높일 수 있음</p>
-<p>신뢰 할 수 없는 자원들도 같은 호스트에서 구동 가능</p>
+<section id="multi-tenanancy" class="level1">
+<h1>multi tenanancy</h1>
+<p>자원들의 집적율을 더욱 높일 수 있음</p>
+<p>비신뢰관계의 자원들도 같은 호스트에서 구동 가능해야 함</p>
+</section>
+<section id="isolation-정도" class="level1">
+<h1>isolation 정도</h1>
+<p><img src="assets/image1.png" style="width:700px;"/></p>
+<p><small><a href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies</a></small></p>
 </section>
 <section id="스프롤-현상" class="level1">
 <h1>스프롤 현상</h1>
 <p>도시계획과 관리 등이 불량하여 발생하는 현상으로,<br />
 도시 시설이나 설비가 부족한 채로<br />
-도시가 저밀도로 무질서하게 교외로 확산되는 것을 말함</p>
+도시가 <font color="red"><strong>저밀도로 무질서하게 교외로 확산</strong></font>되는 것을 말함</p>
 <p><small><a href="https://ko.wikipedia.org/wiki/%EC%8A%A4%ED%94%84%EB%A1%A4_%ED%98%84%EC%83%81">from wikipedia</a></small></p>
 </section>
 <section id="kubesprawl" class="level1">
@@ -617,14 +625,9 @@ func runInit() {
 <p>사용되지 않는 자원들이 많이 발생해서 낭비가 심함</p>
 <p><small><a href="https://tech.paulcz.net/blog/future-of-kubernetes-is-virtual-machines/">from future-of-kubernetes-is-virtual-machines</a></small></p>
 </section>
-<section id="isolation-정도" class="level1">
-<h1>isolation 정도</h1>
-<p><img src="assets/image1.png" style="width:700px;"/></p>
-<p><small><a href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies</a></small></p>
-</section>
 <section id="kubernetes-soft-multi-tenancy" class="level1">
 <h1>kubernetes soft multi tenancy</h1>
-<p>namespace</p>
+<p><font color="red"><strong>namespace</strong></font></p>
 </section>
 <section id="kubernetes-hard-multi-tenancy" class="level1">
 <h1>kubernetes hard multi tenancy</h1>
@@ -633,20 +636,16 @@ func runInit() {
 </section>
 <section id="sandboxed-containers" class="level1">
 <h1>sandboxed containers</h1>
-<p>a.k.a micro vm</p>
+<p><code>container</code> x <code>Virtual machine</code></p>
+<p>emulation과 simulation의 혼합</p>
 <p><img src="assets/sandbox.png" style="width:700px;"/></p>
 <p><small><a href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies</a></small></p>
 </section>
-<section id="호환성과-최적화" class="level1">
-<h1>호환성과 최적화</h1>
-<p>emulation과 simulation에서 대표되는 두 단어는 항상 양립</p>
-<p>결국 둘을 어떻게 섞는지 찾는게 숙제</p>
-</section>
 <section id="결론-2" class="level1">
 <h1>결론</h1>
-<p>기존의 VM의 강점을 가저가면서도<br />
-container의 최적화된 장점들을 가져갈 수 있는 방법들이<br />
-여러가지로 경쟁적으로 나오고 있는 상태</p>
+<p>기존의 VM의 강점(호환성, 보안성)을 가저가면서도<br />
+container의 장점들을 가져갈 수 있는 방법들이<br />
+경쟁적으로 나오고 있는 상태이기에 조금은 기다려야 함</p>
 </section>
 <section id="마지막으로" class="level1">
 <h1>마지막으로</h1>

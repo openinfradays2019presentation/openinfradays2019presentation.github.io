@@ -294,6 +294,8 @@ restart 대신에 delete 하면 kubernetes에서 새로 생성하게 되고 우�
 * VM: <font color="red">**physical machine**</font>의 기능을 최대한 닮게 소프트웨어로 구현
 * app container: <font color="red">**process**</font>가 해야하는 목표를 재현율을 높이며 최적화된 방법을 소프트웨어로 구현
 
+#
+
 *결국 physical machine 과 process의 차이*
 
 *결국 emulation 과 simulation의 차이*
@@ -312,9 +314,9 @@ container를 사용하면서 기존의 방식을
 
 # docker와 container와의 관계
 
-old: docker **is** container
+OLD: docker **is** container
 
-new: docker **is** container `platform`
+NEW: docker **is** container `platform`
 
 # docker의 문제
 
@@ -611,17 +613,23 @@ linuxkit
 container는 VM과 달리 multi tenant를    
 위한 isolation이 적합하지 못하다.
 
-# multi tenant
+# multi tenanancy
 
-자원의 집적율을 더욱 높일 수 있음
+자원들의 집적율을 더욱 높일 수 있음
 
-신뢰 할 수 없는 자원들도 같은 호스트에서 구동 가능
+비신뢰관계의 자원들도 같은 호스트에서 구동 가능해야 함
+
+# isolation 정도
+
+<img src="assets/image1.png" style="width:700px;"/>
+
+<small>[from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies](https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/)</small>
 
 # 스프롤 현상
 
 도시계획과 관리 등이 불량하여 발생하는 현상으로,    
 도시 시설이나 설비가 부족한 채로     
-도시가 저밀도로 무질서하게 교외로 확산되는 것을 말함
+도시가 <font color="red">**저밀도로 무질서하게 교외로 확산**</font>되는 것을 말함
 
 <small>[from wikipedia](https://ko.wikipedia.org/wiki/%EC%8A%A4%ED%94%84%EB%A1%A4_%ED%98%84%EC%83%81)</small>
 
@@ -633,15 +641,9 @@ container는 VM과 달리 multi tenant를
 
 <small>[from future-of-kubernetes-is-virtual-machines](https://tech.paulcz.net/blog/future-of-kubernetes-is-virtual-machines/)</small>
 
-# isolation 정도
-
-<img src="assets/image1.png" style="width:700px;"/>
-
-<small>[from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies](https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/)</small>
-
 # kubernetes soft multi tenancy
 
-namespace
+<font color="red">**namespace**</font>
 
 # kubernetes hard multi tenancy
 
@@ -652,23 +654,19 @@ namespace
 
 # sandboxed containers
 
-a.k.a micro vm
+`container` x `Virtual machine`
+
+emulation과 simulation의 혼합
 
 <img src="assets/sandbox.png" style="width:700px;"/>
 
 <small>[from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies](https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/)</small>
 
-# 호환성과 최적화
-
-emulation과 simulation에서 대표되는 두 단어는 항상 양립
-
-결국 둘을 어떻게 섞는지 찾는게 숙제
-
 # 결론
 
-기존의 VM의 강점을 가저가면서도    
-container의 최적화된 장점들을 가져갈 수 있는 방법들이    
-여러가지로 경쟁적으로 나오고 있는 상태
+기존의 VM의 강점(호환성, 보안성)을 가저가면서도    
+container의 장점들을 가져갈 수 있는 방법들이    
+경쟁적으로 나오고 있는 상태이기에 조금은 기다려야 함
 
 # 마지막으로
 
