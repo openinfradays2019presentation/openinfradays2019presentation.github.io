@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+
+    <title>truly-understanding-container</title>
+
+    <meta name="description" content="truly-understanding-container" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <link rel="stylesheet" href="assets/3rdparty/reveal.js/css/reveal.css" />
+    <link rel="stylesheet" href="assets/3rdparty/reveal.js/css/theme/simple.css" id="theme" />
+
+    <link rel="stylesheet" href="assets/markdeck/styles/zenburn.css" />
+
+        <link rel="stylesheet" href="assets/markdeck/css/markdeck.revealjs.css" />
+    <link rel="stylesheet" href="assets/css/slides.css" />
+
+    <script>
+        window.pdf_render = window.location.search.match(/render=pdf/gi) != null;
+        if (window.pdf_render) {
+            document.write('<link rel="stylesheet" href="assets/css/render-pdf.css" type="text/css">');
+        }
+    </script>
+
+    <link href="assets/css/rerendering.css" rel="stylesheet"></link>
+
+
+</head>
+<body>
+
+
+    <div class="rerendering-message"><h1>R E R E N D E R I N G</h1></div>
+    <div class="markdeck-logo"><a href="https://github.com/arnehilmann/markdeck">powered by markdeck</a></div>
+
+    <div class="reveal">
+        <div class="slides">
+
+<section id="truly-understainding-container" class="level1 light-on-dark" data-bg="#444444" data-background="#444444">
+<h1>Truly understainding container</h1>
+<p><em>이어형</em></p>
+</section>
+<section id="me-어형부형" class="level1">
+<h1>Me: 어형부형</h1>
+<p><img src="assets/al.jpg" style="width:300px;"/></p>
+<p><font size="6">KT: openstack 기반 public storage 서비스 개발,운영</font></p>
+<p><font size="6">Kakao: openstack 기반 private cloud 서비스 개발,운영</font></p>
+<p><small>현재</small> <font size="6"> Line: kubernetes 기반 private cloud native 서비스 개발,운영</font></p>
+</section>
+<section id="주제" class="level1 light-on-dark" data-bg="#444444" data-background="#444444">
+<h1>주제</h1>
+<p>컨테이너란 무엇인가 다시 생각해보고</p>
+<p>컨테이너의 <font color="red"><strong>한계</strong></font>라고 여겨지는 것들에 대해</p>
+<p>해결할 수 있는 방법들을 살펴보며</p>
+<p>이로 향후 컨테이너의 나아갈 방향을 생각해봅니다.</p>
+</section>
+<section id="잘못-끼워진-첫-단추" class="level1">
+<h1><img src="assets/shirt.jpg" alt="잘못 끼워진 첫 단추" /></h1>
+<p>Container와 Virtual machine은 비교대상인가?</p>
+<aside class="notes">
+<p>잘못 끼워진 첫 단추</p>
+우리는 container를 배울때 virtual machine과의 차이점 부터 배운다.
+</aside>
+</section>
+<section id="container-and-virtual-machine의-같은점" class="level1">
+<h1>Container and Virtual Machine의 같은점</h1>
+<p>사용자의 <font color="red"><strong>workload</strong></font>를 처리</p>
+<p>그렇다면 다른 점은?</p>
+</section>
+<section id="구조" class="level1">
+<h1>구조?</h1>
+</section>
+<section id="container-vs-virtual-machine" class="level1">
+<h1><img src="assets/cvsv.png" alt="Container vs Virtual Machine" /></h1>
+<p>Container vs Virtual Machine</p>
+<p><small><a href="https://blog.docker.com/2018/08/containers-replacing-virtual-machines/">image from docker blog</a></small></p>
+</section>
+<section id="성능" class="level1">
+<h1>성능?</h1>
+</section>
+<section id="section" class="level1">
+<h1><img src="assets/performance.png" style="width:700px;"/></h1>
+<p>Container vs Virtual Machine - IOPS</p>
+<p><small><a href="http://course.ece.cmu.edu/~ece845/docs/containers.pdf">image from An Updated Performance Comparison of Virtual Machines and Linux Containers</a></small></p>
+</section>
+<section id="성능이-떨어지는-이유는-구조-때문인가" class="level1">
+<h1>성능이 떨어지는 이유는 구조 때문인가?</h1>
+</section>
+<section id="section-1" class="level1">
+<h1><img src="assets/virtio.png" style="width:700px;"/></h1>
+<p>Container vs Virtual Machine - virtio</p>
+<p><small><a href="http://course.ece.cmu.edu/~ece845/docs/containers.pdf">image from An Updated Performance Comparison of Virtual Machines and Linux Containers</a></small></p>
+</section>
+<section id="virtio-qemu의-존재-이유" class="level1">
+<h1>virtio, QEMU의 존재 이유?</h1>
+</section>
+<section id="section-2" class="level1">
+<h1></h1>
+<p><img src="assets/emulation.png" style="width:700px;"/></p>
+<p>emulation - 본뜸</p>
+<p><small><a href="https://www.unlimitedtomorrow.com/">image from unlimitedtomorrow</a></small></p>
+</section>
+<section id="emulation" class="level1">
+<h1>emulation</h1>
+<p>장점: <font color="red"><strong>호환성</strong></font>을 제공하여 종래의 것을<br />
+그대로 치환(or 이전)가능함</p>
+<p>단점: 모방하기 위한 비용(성능 등)이 큼</p>
+</section>
+<section id="그러면-container는" class="level1">
+<h1>그러면 container는?</h1>
+</section>
+<section id="최초에는-isolation만이-고려" class="level1">
+<h1>최초에는 isolation만이 고려</h1>
+<p>emulation의 오버헤드 없이 사용하고자 했음</p>
+</section>
+<section id="os-container로-시작" class="level1">
+<h1>os container로 시작</h1>
+<p>VM이 <code>hardware virtualization</code>이라면</p>
+<p>container는 <code>os virtualization</code> 라고 했던 시절이..</p>
+</section>
+<section id="os-container-vs-app-container" class="level1">
+<h1>os container vs app container</h1>
+<p><img src="assets/osvsapp.png" style="width:600px;"/></p>
+<p><small><a href="https://medium.com/faun/the-missing-introduction-to-containerization-de1fbb73efc5">image from The Missing Introduction To Containerization</a></small></p>
+</section>
+<section id="section-3" class="level1">
+<h1></h1>
+<figure>
+<img src="assets/history.png" alt="History of Container" /><figcaption>History of Container</figcaption>
+</figure>
+</section>
+<section id="app-container를-한마디로-한다면" class="level1">
+<h1>app container를 한마디로 한다면?</h1>
+</section>
+<section id="section-4" class="level1">
+<h1></h1>
+<p><img src="assets/robot-machine-simulation.png" style="width:700px;"/></p>
+<p>simulation - 모의실험</p>
+<p><a href="https://www.talumis.com/what-is-simulation/">from talumis</a></p>
+</section>
+<section id="그러면-왜-simulation-이라-하는가" class="level1">
+<h1>그러면 왜 simulation 이라 하는가?</h1>
+<p>결과를 예측가능하게 만들기 위해서<br />
+<font color="red"><strong>재사용성</strong></font>을 높인다.</p>
+<p>이 과정에서 <font color="red"><strong>최적화</strong></font>가 가능</p>
+<p><em>== 컨테이너 특성과 유사</em></p>
+</section>
+<section id="그러면-무엇에-대한-simulation인가" class="level1">
+<h1>그러면 무엇에 대한 simulation인가?</h1>
+<p>physical machine이 아닌 <font color="red"><strong>process</strong></font></p>
+</section>
+<section id="그러면-무엇으로-simlation을-제어하는가" class="level1">
+<h1>그러면 무엇으로 simlation을 제어하는가?</h1>
+<p><font color="red"><strong>cgroup</strong></font>과 <font color="red"><strong>namespace</strong></font></p>
+</section>
+<section id="cgroup과-namespace" class="level1">
+<h1>cgroup과 namespace</h1>
+<p>cgroup: resource(memory, cpu, …)을 관리하기 위한 기술</p>
+<p>namespace: 논리적인 독립공간을 제공하기 위한 기술</p>
+</section>
+<section id="namespace-종류" class="level1">
+<h1>namespace 종류</h1>
+<p>mnt : mount</p>
+<p>uts : hostname</p>
+<p>ipc : SystemV IPC</p>
+<p>pid : process</p>
+<p>net : network</p>
+<p>uid : user ID</p>
+<p><strong><em>time , syslog namespace not exist</em></strong></p>
+</section>
+<section id="namespace의-의미" class="level1">
+<h1>namespace의 의미</h1>
+<p>어디에서나 해당 namespace의 내용이</p>
+<p>유지되거나 조작가능하여 <font color="red"><strong>재사용성</strong></font>을 높임</p>
+</section>
+<section id="어떻게-namespace를-생성하는가" class="level1">
+<h1>어떻게 namespace를 생성하는가?</h1>
+<p><em><a href="http://man7.org/linux/man-pages/man2/unshare.2.html">unshare</a> - disassociate parts of the process execution context</em></p>
+</section>
+<section id="section-5" class="level1">
+<h1></h1>
+<pre><code>$ # 이미지 추출
+$ docker export blissful_goldstine -o dockercontainer.tar
+$ mkdir rootfs
+$ tar xf dockercontainer.tar --ignore-command-error -C rootfs/
+$ # container 생성
+$ unshare --mount --uts --ipc --net --pid --user \
+   --fork --map-root-user chroot $PWD/rootfs ash
+root:# mount -t proc none /proc
+root:# mount -t sysfs none /sys
+root:# mount -t tmpfs none /tmp</code></pre>
+<p>이를 이용해서 컨테이너 생성 가능</p>
+<p><small><a href="https://ilearnedhowto.wordpress.com/2017/12/13/how-to-run-docker-containers-using-common-linux-tools-without-docker/">image from how-to-run-docker-containers-using-common-linux-tools-without-docker</a></small></p>
+</section>
+<section id="다만-아직-남은게-있음" class="level1">
+<h1>다만 아직 남은게 있음</h1>
+<p>resource는 분할 했지만 아직 사용량제어를 하지 않음</p>
+<p>그래서 여기에 cgroup을 적용해야 함</p>
+</section>
+<section id="그리고-마지막으로" class="level1">
+<h1>그리고 마지막으로</h1>
+<p>network을 외부 연결해줘야 함</p>
+<p>현재의 network는 갇힌 외부로 연결이 불가능한<br />
+network namespace 상태</p>
+<p>그래서 namespace를 가로지르는 통신방법이 필요</p>
+</section>
+<section id="veth-virtual-ethernet" class="level1">
+<h1>veth: virtual ethernet</h1>
+<p>pair로 존재하며 다른 namespace에 동일하게 존재하여</p>
+<p>한 pair로 들어온 트래픽은 다른 pair의 veth로 복사됨</p>
+<p><img src="assets/container_namespaces.png" /></p>
+<p><small><a href="https://platform9.com/blog/container-namespaces-deep-dive-container-networking/">image from Container Namespaces – Deep Dive into Container Networking</a></small></p>
+</section>
+<section id="최적화된-방법이란" class="level1">
+<h1>최적화된 방법이란?</h1>
+</section>
+<section id="예---ip-할당" class="level1">
+<h1>예 - IP 할당</h1>
+<table>
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 35%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>virtaul machine</th>
+<th>container</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>예(IP할당)</td>
+<td>실제 dhcp를 L2 layer로 broadcasting 한 후에 결과로 IP를 받음</td>
+<td>dhcp를 사용하지 않고 container의 가상의 interface에 IP를 부여</td>
+</tr>
+<tr class="even">
+<td>의미</td>
+<td>dhcp를 그대로 사용가능하여 physical machine등도 같이 사용가능</td>
+<td>IP를 dhcp가 아닌 다른 방법으로 관리가 필요해짐</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="예---container에게-restart가-필요한가" class="level1">
+<h1>예 - container에게 restart가 필요한가?</h1>
+<p>kubernetes엔 container의 restart가 없음</p>
+<p>왜 없을까?</p>
+<p><a href="https://kubernetes.io/docs/reference/kubectl/overview/#operations">kubectl 참고</a></p>
+<aside class="notes">
+<p>workload를 restart하는 것은 그것에 의미를 부여하여 stateful 함을 만들어 cattle이 아닌 pet을 만드는 길입니다.</p>
+restart 대신에 delete 하면 kubernetes에서 새로 생성하게 되고 우리는 굳이 restart 에 대해 디자인 하기 보다 delete 할때 처리해야 하는 일과 start 할때 처리해야 하는 일에 집중해서 stateless 하게 만듭니다.
+</aside>
+</section>
+<section id="virtual-machine-vs-container-목표" class="level1">
+<h1>Virtual machine vs container 목표</h1>
+<ul>
+<li>VM: <font color="red"><strong>physical machine</strong></font>의 기능을 최대한 닮게 소프트웨어로 구현</li>
+<li>app container: <font color="red"><strong>process</strong></font>가 해야하는 목표를 재현율을 높이며 최적화된 방법을 소프트웨어로 구현</li>
+</ul>
+<p><em>결국 physical machine 과 process의 차이 관점으로 봐야함</em></p>
+</section>
+<section id="결국" class="level1">
+<h1>결국</h1>
+<p>이전보다 더 좁은 scope로<br />
+보다 목표 중심적으로 사고를 할 수 있게 됨</p>
+<p>container를 사용하면서 기존의 방식을<br />
+재정의하여 최적화 한 방법들이 나타남</p>
+<p>이는 <font color="red"><strong>cloud native</strong></font>로 연결됨</p>
+</section>
+<section id="container의-한계" class="level1 light-on-dark" data-bg="#444444" data-background="#444444">
+<h1>container의 한계</h1>
+</section>
+<section id="docker와-container와의-관계" class="level1">
+<h1>docker와 container와의 관계</h1>
+<p>old: docker <strong>is</strong> container</p>
+<p>new: docker <strong>is</strong> container <code>platform</code></p>
+</section>
+<section id="docker의-문제" class="level1">
+<h1>docker의 문제</h1>
+</section>
+<section id="unregister-netdevice-error" class="level1">
+<h1>unregister netdevice error</h1>
+<p>아직까지 해결되지 않은<br />
+커널 패닉을 유발하는 문제가 존재</p>
+<p><small><a href="https://www.bountysource.com/issues/2004254-kernel-crash-after-unregister_netdevice-waiting-for-lo-to-become-free-usage-count-3">from kernel-crash-after-unregister_netdevice-waiting-for-lo-to-become-free-usage-count-3</a></small></p>
+</section>
+<section id="docker-daemon에-종속성이-있음" class="level1">
+<h1>docker daemon에 종속성이 있음</h1>
+<p>docker restart시 컨테이너에 영향</p>
+<p>docker socket이 죽을 시 컨테이너에 영향</p>
+</section>
+<section id="한계-1" class="level1">
+<h1>한계 #1</h1>
+<p>너무 많은 기능을 가지고 있는<br />
+<code>docker daemon</code>의 종속성으로<br />
+한번에 노드가 망가지기가 쉽다.</p>
+</section>
+<section id="우선-그러면-docker는-대체-가능-한가" class="level1">
+<h1>우선 그러면 docker는 대체 가능 한가?</h1>
+</section>
+<section id="runtimes" class="level1">
+<h1>runtimes</h1>
+<p><img src="assets/runtimes.png" /></p>
+<p><small><a href="https://www.ianlewis.org/en/container-runtimes-part-1-introduction-container-r">from container-runtimes-part-1-introduction-container-r</a></small></p>
+</section>
+<section id="kubernetes-container-runtime-interface" class="level1">
+<h1>kubernetes container runtime interface</h1>
+<p>docker 없이 container를 사용하기 위한 interface들이 제공됨</p>
+<p><img src="assets/docker-ce.png" style="width:600px;"/></p>
+<p><small><a href="https://kubernetes.io/blog/2018/05/24/kubernetes-containerd-integration-goes-ga/">from kubernetes-containerd-integration-goes-ga</a></small></p>
+</section>
+<section id="containerd" class="level1">
+<h1>containerd</h1>
+<p>단순성, 견고성, 휴대성을 중시한<br />
+산업 표준 container runtime</p>
+<p><img src="assets/containerd-1.png" style="width:400px;"/></p>
+</section>
+<section id="containerd-performance" class="level1">
+<h1>containerd performance</h1>
+<p><img src="assets/cpu.png" style="width:600px;"/></p>
+</section>
+<section id="다만-새로운-runtime들을-사용시" class="level1">
+<h1>다만 새로운 runtime들을 사용시</h1>
+<p>대부분 이름 그대로 runtime만 가지고 있음</p>
+<p>build는 별도</p>
+</section>
+<section id="그렇다면-build는" class="level1">
+<h1>그렇다면 build는?</h1>
+</section>
+<section id="buildkit" class="level1">
+<h1>buildkit</h1>
+<p>동시성, 캐시 효율성 이 있으며<br />
+Dockerfile에 구속받지않는 빌더 툴킷</p>
+<p><img src="assets/buildkit.png" style="width:600px;"/></p>
+<p><small><a href="https://www.xenonstack.com/blog/container-images-with-buildkit/">from Building Efficient Docker Container Images with BuildKit</a></small></p>
+</section>
+<section id="결론" class="level1">
+<h1>결론</h1>
+<p>새로운 runtime을 사용하면<br />
+buildtime, runtime을 구분 함</p>
+<p>이를 통해 container service에서는<br />
+오직 runtime만 사용하여 보안성 및 성능 향상</p>
+</section>
+<section id="한계-2" class="level1">
+<h1>한계 #2</h1>
+<p>docker는 <code>root</code>만이 해당 OS에 설치가능</p>
+<p>취약점 발생시 OS레벨<br />
+문제 일으킬 가능성들이 존재함</p>
+</section>
+<section id="root로-사용하는-컨테이너들" class="level1">
+<h1>root로 사용하는 컨테이너들</h1>
+<p><code>USER</code> syntax등을 사용하지 않으면 기본적으로 root 이기에</p>
+<p>일반적으로 root user를 사용해서 docker를 이용</p>
+<pre><code>$ docker run -ti busybox whoami
+root</code></pre>
+</section>
+<section id="외부-device-혹은-directory-mount시-일반-user사용이-힘든" class="level1">
+<h1>외부 device 혹은 directory mount시 일반 user사용이 힘든</h1>
+<p>권한 문제발생</p>
+<pre><code>$ cat Dockerfile 
+...
+
+# Add chrome user
+RUN groupmod -g 995 audio \
+    &amp;&amp; groupmod -g 986 video \
+    &amp;&amp; groupadd -g 1000 -r chrome \
+    &amp;&amp; useradd -u 1000 -r -g chrome -G audio,video chrome \
+    &amp;&amp; mkdir -p /home/chrome/Downloads \
+    &amp;&amp; chown -R chrome:chrome /home/chrome
+
+...
+
+# Run Chrome as non privileged user
+USER chrome
+
+# Autorun chrome
+ENTRYPOINT [ &quot;google-chrome&quot; ]
+CMD [ &quot;--user-data-dir=/data&quot; ]</code></pre>
+<p><small><a href="https://github.com/leoh0/dotfiles/blob/master/.dockerfunc#L1280-L1308">from leoh0 dockerfiles</a></small></p>
+</section>
+<section id="root로-사용하는-컨테이너들-1" class="level1">
+<h1>root로 사용하는 컨테이너들</h1>
+<p>일반적으로 root를 사용해서 docker를 이용</p>
+<pre><code>vscode(){
+    docker run -d \
+        -v /etc/localtime:/etc/localtime:ro \
+        -v /tmp/.X11-unix:/tmp/.X11-unix  \
+        -v /usr/share/fonts:/usr/share/fonts \
+        -v /usr/lib/locale/locale-archive:/usr/lib/locale/locale-archive \
+        -v &quot;${HOME}/.vscode/extension:/home/user/.vscode&quot; \
+        -v &quot;${HOME}/.vscode/config:/home/user/.config&quot; \
+        -e &quot;GTK_IM_MODULE=uim&quot; \
+        -e &quot;XMODIFIERS=@im=uim&quot; \
+        -e &quot;QT_IM_MODULE=uim&quot; \
+        -e &quot;LC_ALL=ko_KR.UTF-8&quot; \
+        -v &quot;$(pwd):/project&quot; \
+        -e &quot;DISPLAY=unix${DISPLAY}&quot; \
+        --device /dev/dri \
+        --name visualstudio \
+        leoh0/vscode \
+        bash -c &#39;su user -p -c &quot;/usr/share/code/code /project&quot;&#39;
+}</code></pre>
+<p>#TODO 일반유저를 줘서 사용시 uid, gid 치환문제가 발생</p>
+</section>
+<section id="rootless-container" class="level1">
+<h1>rootless container</h1>
+<p>root 권한이없는 사용자가<br />
+컨테이너를 작성, 실행 및 관리 할 수있음</p>
+<p><small><a href="https://rootlesscontaine.rs/">from rootlesscontaine.rs</a></small></p>
+</section>
+<section id="이런건-rootless-container가-아님" class="level1">
+<h1>이런건 rootless container가 아님</h1>
+<ul>
+<li><code>docker run --user foo</code></li>
+<li>Dockerfile 안에 <code>USER</code></li>
+<li><code>usermod -aG docker foo</code></li>
+<li><code>sudo docker</code> or <code>chmod +s dockerd</code></li>
+<li><code>dockerd --userns-remap</code></li>
+</ul>
+<p><small><a href="https://rootlesscontaine.rs/">from rootlesscontaine.rs</a></small></p>
+</section>
+<section id="podman" class="level1">
+<h1>podman</h1>
+<p>Podman linux 시스템에서 OCI 컨테이너를<br />
+개발, 관리 및 실행하기 위한 데몬이 없는 컨테이너 엔진</p>
+<p><code>alias docker=podman</code>.</p>
+<p><img src="assets/podman.svg" style="width:600px;"/></p>
+<p><a href="https://podman.io/">from podman</a></p>
+</section>
+<section id="데몬-없는-podman" class="level1">
+<h1>데몬 없는 podman</h1>
+<p>podman 커맨드가 직접 linux에 접근해서 모든것을 실행</p>
+<p><img src="assets/fig2.png" style="width:400px;"/></p>
+<p><a href="https://developers.redhat.com/blog/2019/02/21/podman-and-buildah-for-docker-users/">from podman-and-buildah-for-docker-users</a></p>
+</section>
+<section id="binctr" class="level1">
+<h1>binctr</h1>
+<p>실행 가능한 바이너리로서 완전 정적이고 권한없이도 실행가능한 독립적 인 컨테이너.</p>
+<p><a href="https://github.com/genuinetools/binctr">from binctr</a></p>
+</section>
+<section id="binctr-예" class="level1">
+<h1>binctr 예</h1>
+<section>
+<video autoplay="true" class="stretch" src="assets/binctr.mp4">
+</video>
+</section>
+<p><a href="https://github.com/leoh0/kakaotalk-binctr/">from kakaotalk-binctr</a></p>
+</section>
+<section id="과정" class="level1">
+<h1>과정</h1>
+<p>#TODO 이쁘게 수정</p>
+<p><small></p>
+<p>바이너리 실행 -&gt;</p>
+<p>컨테이너 스펙 생성 -&gt;</p>
+<p>바이너리 안에 미리 넣은 이미지를 압축 풀어서 rootfs를 만듬 -&gt;</p>
+<p>컨테이너 실행 -&gt;</p>
+<p>컨테이너 안에서 이 바이너리를 실행 이때 뒤에 인자 init을 붙여서 분기 -&gt;</p>
+<p>컨테이너 안에서 다시 이 바이너리가 실행되면서<br />
+위의 rootfs로 pivot하여 위의 컨테이너 스펙으로 실행
+</small></p>
+</section>
+<section id="이를-구현한-주요-코드" class="level1">
+<h1>이를 구현한 주요 코드</h1>
+<pre><code>package main
+
+import (
+    &quot;flag&quot;
+    &quot;os&quot;
+    &quot;runtime&quot;
+
+    &quot;github.com/leoh0/binctr/container&quot;
+    &quot;github.com/opencontainers/runc/libcontainer&quot;
+    _ &quot;github.com/opencontainers/runc/libcontainer/nsenter&quot;
+    specs &quot;github.com/opencontainers/runtime-spec/specs-go&quot;
+    &quot;github.com/sirupsen/logrus&quot;
+)
+
+const (
+    defaultRoot      = &quot;/tmp/kakaotalk-binctr&quot;
+    defaultRootfsDir = &quot;rootfs&quot;
+)
+
+var (
+    containerID string
+    root        string
+
+    file      string
+    dir       string
+    shortpath string
+)
+
+func init() {
+    // Parse flags
+    flag.StringVar(&amp;containerID, &quot;id&quot;, &quot;kakaotalk&quot;, &quot;container ID&quot;)
+    flag.StringVar(&amp;root, &quot;root&quot;, defaultRoot, &quot;root directory of container state, should be tmpfs&quot;)
+
+    flag.Usage = func() {
+        flag.PrintDefaults()
+    }
+
+    flag.Parse()
+}
+
+//go:generate go run generate.go
+func main() {
+    if len(os.Args) &gt; 1 &amp;&amp; os.Args[1] == &quot;init&quot; {
+        runInit()
+        return
+    }
+
+    dir := os.Getenv(&quot;HOME&quot;) + &quot;/.kwine&quot;
+    if _, err := os.Stat(dir); os.IsNotExist(err) {
+        err = os.MkdirAll(dir, 0755)
+        if err != nil {
+            panic(err)
+        }
+    }
+
+    // Create a new container spec with the following options.
+    opts := container.SpecOpts{
+        Rootless: false,
+        Terminal: false,
+        Args: []string{
+            &quot;/usr/local/bin/entrypoint.sh&quot;,
+        },
+        Env: []string{
+            &quot;LANG=ko_KR.UTF-8&quot;,
+            &quot;LANGUAGE=ko_KR.UTF-8&quot;,
+            &quot;GTK_IM_MODULE=uim&quot;,
+            &quot;XMODIFIERS=@im=uim&quot;,
+            &quot;QT_IM_MODULE=uim&quot;,
+            &quot;DISPLAY=unix:0&quot;,
+            &quot;PULSE_SERVER=tcp:127.0.0.1:4713&quot;,
+            &quot;PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&quot;,
+        },
+        Mounts: []specs.Mount{
+            {
+                Destination: &quot;/etc/localtime&quot;,
+                Type:        &quot;bind&quot;,
+                Source:      &quot;/etc/localtime&quot;,
+                Options:     []string{&quot;ro&quot;, &quot;rbind&quot;, &quot;rprivate&quot;},
+            },
+            {
+                Destination: &quot;/tmp/.X11-unix&quot;,
+                Type:        &quot;bind&quot;,
+                Source:      &quot;/tmp/.X11-unix&quot;,
+                Options:     []string{&quot;rw&quot;, &quot;rbind&quot;, &quot;rprivate&quot;},
+            },
+            {
+                Destination: &quot;/root/.wine&quot;,
+                Type:        &quot;bind&quot;,
+                Source:      dir,
+                Options:     []string{&quot;rw&quot;, &quot;rbind&quot;, &quot;rprivate&quot;},
+            },
+        },
+    }
+    spec := container.Spec(opts)
+
+    // Initialize the container object.
+    c := &amp;container.Container{
+        ID:               containerID,
+        Spec:             spec,
+        Root:             root,
+        Rootless:         false,
+        Detach:           false,
+        NoPivotRoot:      true,
+        UseSystemdCgroup: false,
+        HostNetwork:      true,
+        ShareIPC:         true,
+    }
+
+    // Unpack the rootfs.
+    if err := c.UnpackRootfs(defaultRootfsDir, Asset); err != nil {
+        logrus.Fatal(err)
+    }
+
+    // Run the container.
+    status, err := c.Run()
+    if err != nil {
+        logrus.Fatal(err)
+    }
+
+    // Remove the rootfs after the container has exited.
+    if err := os.RemoveAll(defaultRootfsDir); err != nil {
+        logrus.Warnf(&quot;removing rootfs failed: %v&quot;, err)
+    }
+
+    // Exit with the container&#39;s exit status.
+    os.Exit(status)
+}
+
+func runInit() {
+    runtime.GOMAXPROCS(1)
+    runtime.LockOSThread()
+    factory, _ := libcontainer.New(&quot;&quot;)
+    if err := factory.StartInitialization(); err != nil {
+        // as the error is sent back to the parent there is no need to log
+        // or write it to stderr because the parent process will handle this
+        os.Exit(1)
+    }
+    panic(&quot;libcontainer: container init failed to exec&quot;)
+}</code></pre>
+</section>
+<section id="이런-방법외에도" class="level1">
+<h1>이런 방법외에도</h1>
+<p>coreOS</p>
+<p>linuxkit</p>
+<p>등과 같은 공격받을 범위를 줄이는<br />
+적은 공격 범위를 갖는 전문 컨테이너 호스트를 사용</p>
+</section>
+<section id="결론-1" class="level1">
+<h1>결론</h1>
+<p>가능한 적은 root 권한을 이용하도록 함</p>
+<p>가능한 적은 권한을 같는 OS 기반에서 사용하도록 함</p>
+</section>
+<section id="한계-3" class="level1">
+<h1>한계 #3</h1>
+<p>container는 VM과 달리 multi tenant를<br />
+위한 isolation이 적합하지 못하다.</p>
+</section>
+<section id="multi-tenant" class="level1">
+<h1>multi tenant</h1>
+<p>#TODO multi tenant가 왜 필요 한지?</p>
+</section>
+<section id="kubesprawl" class="level1">
+<h1>kubesprawl</h1>
+<p>#TODO kubesprawl 에 대한 설명</p>
+<p>https://tech.paulcz.net/blog/future-of-kubernetes-is-virtual-machines/</p>
+</section>
+<section id="isolation-정도" class="level1">
+<h1>isolation 정도</h1>
+<p><img src="assets/image1.png" style="width:700px;"/></p>
+<p><a href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies</a></p>
+</section>
+<section id="kubernetes-soft-multi-tenancy" class="level1">
+<h1>kubernetes soft multi tenancy</h1>
+<p>#TODO namespace 소개
+namespace</p>
+</section>
+<section id="kubernetes-hard-multi-tenancy" class="level1">
+<h1>kubernetes hard multi tenancy</h1>
+<p><img src="assets/mtimage2.png" style="width:700px;"/></p>
+<p><a href="https://blog.jessfraz.com/post/hard-multi-tenancy-in-kubernetes/">hard-multi-tenancy-in-kubernetes</a></p>
+</section>
+<section id="sandboxed-containers" class="level1">
+<h1>sandboxed containers</h1>
+<p>a.k.a micro vm</p>
+<p><img src="assets/sandbox.png" style="width:700px;"/></p>
+<p><a href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">from making-containers-more-isolated-an-overview-of-sandboxed-container-technologies</a></p>
+</section>
+<section id="결론-2" class="level1">
+<h1>결론</h1>
+<p>기존의 VM의 강점을 가저가면서도<br />
+container의 최적화된 장점들을 가져갈 수 있는 방법들이<br />
+여러가지로 경쟁적으로 나오고 있는 상태</p>
+</section>
+<section id="마지막으로" class="level1">
+<h1>마지막으로</h1>
+<p><img src="assets/vm.png" style="width:700px;"/></p>
+</section>
+<section id="감사합니다." class="level1">
+<h1>감사합니다.</h1>
+</section>
+
+        </div>
+    </div>
+
+    <script src="assets/3rdparty/jquery.js"></script>
+
+    <script src="assets/3rdparty/reveal.js/lib/js/head.min.js"></script>
+    <script src="assets/3rdparty/reveal.js/js/reveal.js"></script>
+
+    <script>
+        // Full list of configuration options available here:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: 'true',
+            controlsTutorial: '',
+            controlsLayout: 'bottom-right',
+            controlsBackArrows: 'faded',
+            progress: 'true',
+            defaultTiming: '120',
+            slideNumber: 'true',
+            history: 'true',
+            keyboard: 'true',
+            overview: 'true',
+            center: 'true',
+            touch: 'true',
+            loop: '',
+            rtl: '',
+            shuffle: '',
+            fragments: 'true',
+            embedded: '',
+            help: 'true',
+            showNotes: '',
+            autoPlayMedia: 'null',
+
+            autoSlide: (window.pdf_render) ? 0 : 0,
+
+            autoSlideStoppable: 'true',
+            autoSlideMethod: 'Reveal.navigateNext',
+            mouseWheel: '',
+            hideAddressBar: 'true',
+            previewLinks: '',
+            transition: 'slide',
+            transitionSpeed: 'default',
+            backgroundTransition: 'fade',
+
+            theme: 'simple',
+
+            // Optional libraries used to extend on reveal.js
+            dependencies: [
+                { src: 'assets/3rdparty/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                { src: 'assets/markdeck/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                { src: 'assets/3rdparty/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                { src: 'assets/3rdparty/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+            ]
+        });
+    </script>
+
+    
+    <script src="assets/markdeck/revealjs-helper.js"></script>
+    <script>
+        flushleft(".slides .flushleft");
+    </script>
+
+
+</body>
+</html>
