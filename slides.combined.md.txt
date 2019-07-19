@@ -45,17 +45,20 @@ Container와 Virtual machine은 비교대상인가?
 
 그렇다면 다른 점은?
 
+<aside class="notes">
+workload는 사용자가 하고 싶은 일감
+</aside>
+
 # 구조?
 
 ![Container vs Virtual Machine](assets/cvsv.png)
-
-Container vs Virtual Machine
 
 <small>[image from docker blog](https://blog.docker.com/2018/08/containers-replacing-virtual-machines/)</small>
 
 # 성능?
 
-<img src="assets/performance.png" style="width:700px;"/>
+<img src="assets/performance.png" style="width:600px;"/>
+
 Container vs Virtual Machine - IOPS
 
 <small>[image from An Updated Performance Comparison of Virtual Machines and Linux Containers](http://course.ece.cmu.edu/~ece845/docs/containers.pdf)</small>
@@ -85,6 +88,10 @@ emulation - 본뜸
 
 단점: 모방하기 위한 비용(성능 등)이 큼
 
+<aside class="notes">
+보안성은 덤
+</aside>
+
 # 그러면 container는?
 
 # 최초에는 isolation만이 고려
@@ -102,11 +109,19 @@ VM이 `hardware virtualization`이라면
 
 container는 `os virtualization` 라고 했던 시절이..
 
+<aside class="notes">
+이때는 많이 비교 될 수 밖에 없었음
+</aside>
+
 # os container vs app container
 
 <img src="assets/osvsapp.png" style="width:600px;"/>
 
 <small>[image from The Missing Introduction To Containerization](https://medium.com/faun/the-missing-introduction-to-containerization-de1fbb73efc5)</small>
+
+<aside class="notes">
+지금도 app container들이 shell을 띄워서 os container 처럼도 사용
+</aside>
 
 #
 
@@ -120,7 +135,7 @@ container는 `os virtualization` 라고 했던 시절이..
 
 simulation - 모의실험
 
-[from talumis](https://www.talumis.com/what-is-simulation/)
+<small>[from talumis](https://www.talumis.com/what-is-simulation/)</small>
 
 # 그러면 왜 simulation 이라 하는가?
 
@@ -135,7 +150,7 @@ simulation - 모의실험
 
 physical machine이 아닌 <font color="red">**process**</font>
 
-# 그러면 무엇으로 simlation을 제어하는가?
+# 그러면 무엇으로 simulation을 제어하는가?
 
 <font color="red">**cgroup**</font>과 <font color="red">**namespace**</font>
 
@@ -144,6 +159,11 @@ physical machine이 아닌 <font color="red">**process**</font>
 cgroup: control group, resource(memory, cpu, ...)을 관리하기 위한 기술
 
 namespace: 논리적인 독립공간을 제공하기 위한 기술
+
+<aside class="notes">
+namespace를 통해 다른 namespace에서 동일한 ip 동일한 pid등을 가질 수 있음
+이는 재사용성에 연결됨
+</aside>
 
 # namespace 종류
 
@@ -161,6 +181,14 @@ uid : user ID
 
 ***time , syslog namespace not exist***
 
+<aside class="notes">
+이 namespace들로 container의 마법이 이루어짐
+
+예를 들어서 일반 os가 sda를 마운트 하고 있다면
+
+container는 mnt namespace로 rootfs를 마운트 해서 마치 새로운 공간인 것 같은 느낌을 줌
+</aside>
+
 # namespace의 의미
 
 어디에서나 해당 namespace의 내용이    
@@ -169,7 +197,7 @@ uid : user ID
 
 # 어떻게 namespace를 생성하는가?
 
-*[unshare](http://man7.org/linux/man-pages/man2/unshare.2.html) - disassociate parts of the process execution context*
+*[unshare](http://man7.org/linux/man-pages/man2/unshare.2.html) - 프로세스 실행 컨텍스트의 일부분을 분리하기 위한 툴.*
 
 #
 
@@ -195,6 +223,10 @@ root:# mount -t tmpfs none /tmp
 아직 사용량제어를 하지 않음
 
 그래서 여기에 cgroup을 적용해야 함
+
+<aside class="notes">
+나쁜 이웃 문제
+</aside>
 
 # 이런 과정을 조금 쉽게 쓸 수 있게 한다면
 
@@ -340,7 +372,7 @@ docker socket이 죽을 시 컨테이너에 영향
 `docker daemon`의 종속성으로    
 한번에 노드가 망가지기가 쉽다.
 
-# 우선 그러면 docker는 대체 가능 한가?
+# 그러면 docker는 대체 가능 한가?
 
 # runtimes
 

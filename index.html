@@ -68,19 +68,21 @@
 <h1>Container and Virtual Machine의 같은점</h1>
 <p>사용자의 <font color="red"><strong>workload</strong></font>를 처리</p>
 <p>그렇다면 다른 점은?</p>
+<aside class="notes">
+workload는 사용자가 하고 싶은 일감
+</aside>
 </section>
 <section id="구조" class="level1">
 <h1>구조?</h1>
 <figure>
 <img src="assets/cvsv.png" alt="Container vs Virtual Machine" /><figcaption>Container vs Virtual Machine</figcaption>
 </figure>
-<p>Container vs Virtual Machine</p>
 <p><small><a href="https://blog.docker.com/2018/08/containers-replacing-virtual-machines/">image from docker blog</a></small></p>
 </section>
 <section id="성능" class="level1">
 <h1>성능?</h1>
-<p><img src="assets/performance.png" style="width:700px;"/>
-Container vs Virtual Machine - IOPS</p>
+<p><img src="assets/performance.png" style="width:600px;"/></p>
+<p>Container vs Virtual Machine - IOPS</p>
 <p><small><a href="http://course.ece.cmu.edu/~ece845/docs/containers.pdf">image from An Updated Performance Comparison of Virtual Machines and Linux Containers</a></small></p>
 </section>
 <section id="성능이-떨어지는-이유는-구조-때문인가" class="level1">
@@ -103,6 +105,9 @@ Container vs Virtual Machine - IOPS</p>
 <p>장점: <font color="red"><strong>호환성</strong></font>을 제공하여 종래의 것을<br />
 그대로 치환(or 이전)가능함</p>
 <p>단점: 모방하기 위한 비용(성능 등)이 큼</p>
+<aside class="notes">
+보안성은 덤
+</aside>
 </section>
 <section id="그러면-container는" class="level1">
 <h1>그러면 container는?</h1>
@@ -117,11 +122,17 @@ Container vs Virtual Machine - IOPS</p>
 <h1>os container로 시작</h1>
 <p>VM이 <code>hardware virtualization</code>이라면</p>
 <p>container는 <code>os virtualization</code> 라고 했던 시절이..</p>
+<aside class="notes">
+이때는 많이 비교 될 수 밖에 없었음
+</aside>
 </section>
 <section id="os-container-vs-app-container" class="level1">
 <h1>os container vs app container</h1>
 <p><img src="assets/osvsapp.png" style="width:600px;"/></p>
 <p><small><a href="https://medium.com/faun/the-missing-introduction-to-containerization-de1fbb73efc5">image from The Missing Introduction To Containerization</a></small></p>
+<aside class="notes">
+지금도 app container들이 shell을 띄워서 os container 처럼도 사용
+</aside>
 </section>
 <section id="section-1" class="level1">
 <h1></h1>
@@ -136,7 +147,7 @@ Container vs Virtual Machine - IOPS</p>
 <h1></h1>
 <p><img src="assets/robot-machine-simulation.png" style="width:700px;"/></p>
 <p>simulation - 모의실험</p>
-<p><a href="https://www.talumis.com/what-is-simulation/">from talumis</a></p>
+<p><small><a href="https://www.talumis.com/what-is-simulation/">from talumis</a></small></p>
 </section>
 <section id="그러면-왜-simulation-이라-하는가" class="level1">
 <h1>그러면 왜 simulation 이라 하는가?</h1>
@@ -149,14 +160,18 @@ Container vs Virtual Machine - IOPS</p>
 <h1>그러면 무엇에 대한 simulation인가?</h1>
 <p>physical machine이 아닌 <font color="red"><strong>process</strong></font></p>
 </section>
-<section id="그러면-무엇으로-simlation을-제어하는가" class="level1">
-<h1>그러면 무엇으로 simlation을 제어하는가?</h1>
+<section id="그러면-무엇으로-simulation을-제어하는가" class="level1">
+<h1>그러면 무엇으로 simulation을 제어하는가?</h1>
 <p><font color="red"><strong>cgroup</strong></font>과 <font color="red"><strong>namespace</strong></font></p>
 </section>
 <section id="cgroup과-namespace" class="level1">
 <h1>cgroup과 namespace</h1>
 <p>cgroup: control group, resource(memory, cpu, …)을 관리하기 위한 기술</p>
 <p>namespace: 논리적인 독립공간을 제공하기 위한 기술</p>
+<aside class="notes">
+namespace를 통해 다른 namespace에서 동일한 ip 동일한 pid등을 가질 수 있음
+이는 재사용성에 연결됨
+</aside>
 </section>
 <section id="namespace-종류" class="level1">
 <h1>namespace 종류</h1>
@@ -167,6 +182,11 @@ Container vs Virtual Machine - IOPS</p>
 <p>net : network</p>
 <p>uid : user ID</p>
 <p><strong><em>time , syslog namespace not exist</em></strong></p>
+<aside class="notes">
+<p>이 namespace들로 container의 마법이 이루어짐</p>
+<p>예를 들어서 일반 os가 sda를 마운트 하고 있다면</p>
+container는 mnt namespace로 rootfs를 마운트 해서 마치 새로운 공간인 것 같은 느낌을 줌
+</aside>
 </section>
 <section id="namespace의-의미" class="level1">
 <h1>namespace의 의미</h1>
@@ -175,7 +195,7 @@ Container vs Virtual Machine - IOPS</p>
 </section>
 <section id="어떻게-namespace를-생성하는가" class="level1">
 <h1>어떻게 namespace를 생성하는가?</h1>
-<p><em><a href="http://man7.org/linux/man-pages/man2/unshare.2.html">unshare</a> - disassociate parts of the process execution context</em></p>
+<p><em><a href="http://man7.org/linux/man-pages/man2/unshare.2.html">unshare</a> - 프로세스 실행 컨텍스트의 일부분을 분리하기 위한 툴.</em></p>
 </section>
 <section id="section-3" class="level1">
 <h1></h1>
@@ -196,6 +216,9 @@ root:# mount -t tmpfs none /tmp</code></pre>
 <h1>다만 아직 남은게 있음</h1>
 <p>아직 사용량제어를 하지 않음</p>
 <p>그래서 여기에 cgroup을 적용해야 함</p>
+<aside class="notes">
+나쁜 이웃 문제
+</aside>
 </section>
 <section id="이런-과정을-조금-쉽게-쓸-수-있게-한다면" class="level1">
 <h1>이런 과정을 조금 쉽게 쓸 수 있게 한다면</h1>
@@ -347,8 +370,8 @@ restart 대신에 delete 하면 kubernetes에서 새로 생성하게 되고 우�
 <code>docker daemon</code>의 종속성으로<br />
 한번에 노드가 망가지기가 쉽다.</p>
 </section>
-<section id="우선-그러면-docker는-대체-가능-한가" class="level1">
-<h1>우선 그러면 docker는 대체 가능 한가?</h1>
+<section id="그러면-docker는-대체-가능-한가" class="level1">
+<h1>그러면 docker는 대체 가능 한가?</h1>
 </section>
 <section id="runtimes" class="level1">
 <h1>runtimes</h1>
